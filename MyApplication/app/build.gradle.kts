@@ -1,11 +1,13 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
+
 }
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.myapplication"
@@ -69,4 +71,12 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:realtime-kt:1.4.0")
     implementation("io.ktor:ktor-client-okhttp:2.3.5")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    val lifecycle_version = "2.6.2"
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+
+    val nav_version = "2.7.5"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 }
