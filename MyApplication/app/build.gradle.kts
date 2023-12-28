@@ -76,7 +76,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-<<<<<<< HEAD
 
 
     val lifecycle_version = "2.6.2"
@@ -97,10 +96,4 @@ dependencies {
 
 
 
-=======
-
-
-
-
->>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
 }

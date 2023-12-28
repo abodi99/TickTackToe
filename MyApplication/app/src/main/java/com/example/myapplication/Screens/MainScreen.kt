@@ -1,9 +1,6 @@
 package com.example.myapplication.Screens
 
-<<<<<<< HEAD
 import LobbyViewModel
-=======
->>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,10 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-<<<<<<< HEAD
-=======
-import com.example.myapplication.ViewModels.LobbyViewModel
->>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.ServerState
 import io.garrit.android.multiplayer.SupabaseService
@@ -41,11 +34,7 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-<<<<<<< HEAD
 fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navController: NavController ) {
-=======
-fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel,navController: NavController ) {
->>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
     var playerName by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(false) }
     val viewModelScope = lobbyViewModel.viewModelScope
