@@ -199,7 +199,11 @@ object SupabaseService {
         }
     }
 
+<<<<<<< HEAD
      suspend fun leaveLobby() {
+=======
+    private suspend fun leaveLobby() {
+>>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
         _lobbyJobs.forEach { it.cancel() }
         _lobbyJobs.clear()
         _lobby?.untrack()

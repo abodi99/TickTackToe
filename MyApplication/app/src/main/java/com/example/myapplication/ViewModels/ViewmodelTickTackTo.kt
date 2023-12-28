@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+<<<<<<< HEAD
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.Board
 import com.example.myapplication.data.Cell
@@ -25,6 +26,13 @@ class GameViewModel : ViewModel(), SupabaseCallback {
     val serverState = SupabaseService.serverState
     val currentPlayer
         get() = SupabaseService.player
+=======
+import io.garrit.android.multiplayer.SupabaseService
+
+class ViewmodelTickTackTo: ViewModel() {
+    // Access the singleton instance of SupabaseService
+    private val supabaseService = SupabaseService
+>>>>>>> 9cc1665782210836e0d05a47d3964cef6d1eddc4
 
 
     val board: Board
