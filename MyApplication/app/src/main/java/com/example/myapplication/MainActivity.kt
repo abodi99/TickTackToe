@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import LobbyViewModel
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -10,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,8 +20,7 @@ import com.example.myapplication.Screens.Content
 import com.example.myapplication.Screens.LobbyScreen
 import com.example.myapplication.Screens.Screen
 import com.example.myapplication.Screens.TicTacToeGrid
-import com.example.myapplication.ViewModels.LobbyViewModel
-import com.example.myapplication.ViewModels.ViewmodelTickTackTo
+import com.example.myapplication.ViewModels.GameViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import io.garrit.android.multiplayer.SupabaseService
 
@@ -27,7 +28,6 @@ class MainActivity : ComponentActivity() {
 
 
     private val supabaseService = SupabaseService
-    val viewModel = viewModels<ViewmodelTickTackTo>()
 
 
 
@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val lobbyViewModel: LobbyViewModel = LobbyViewModel()
-            val lobbyViewModel2: LobbyViewModel by viewModels()
+
+            val gameViewModel: GameViewModel = viewModel()
 
 
 
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
                 ) {
                     //JoinLobby()
-                    NavigationHost(navController,lobbyViewModel2)
+                    NavigationHost(navController,lobbyViewModel, gameViewModel)
 
                 }
             }
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavigationHost(navController: NavHostController, lobbyViewModel: LobbyViewModel) {
+fun NavigationHost(navController: NavHostController, lobbyViewModel: LobbyViewModel, gameViewModel: GameViewModel) {
     NavHost(navController = navController, startDestination = "main") {
         composable(Screen.Main.route) {
             Content( onJoinLobby = {
@@ -66,13 +67,16 @@ fun NavigationHost(navController: NavHostController, lobbyViewModel: LobbyViewMo
         composable(Screen.Lobby.route + "/{playerName}") { backStackEntry ->
             //Lobby(navController)
             val playerName = backStackEntry.arguments?.getString("playerName") ?: ""
-            LobbyScreen(navController, playerName = playerName, lobbyViewModel)
+          //  LobbyScreen(navController, playerName = playerName, gameViewModel, lobbyViewModel)
+            LobbyScreen(navController, gameViewModel, lobbyViewModel, playerName = playerName)
 
         }
         composable(Screen.Game.route) {
             TicTacToeGrid(navController)
         }
     }
+
+
 }
 
 

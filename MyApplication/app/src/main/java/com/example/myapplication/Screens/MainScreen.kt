@@ -1,5 +1,6 @@
 package com.example.myapplication.Screens
 
+import LobbyViewModel
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.example.myapplication.ViewModels.LobbyViewModel
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.ServerState
 import io.garrit.android.multiplayer.SupabaseService
@@ -34,7 +34,7 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel,navController: NavController ) {
+fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navController: NavController ) {
     var playerName by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(false) }
     val viewModelScope = lobbyViewModel.viewModelScope
