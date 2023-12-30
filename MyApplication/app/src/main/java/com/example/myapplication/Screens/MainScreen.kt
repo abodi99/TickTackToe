@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -39,8 +40,6 @@ fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navControll
     var isNameValid by remember { mutableStateOf(false) }
     val viewModelScope = lobbyViewModel.viewModelScope
 
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -48,11 +47,13 @@ fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navControll
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Header with gaming font
         Text(
-            text = "Type your player name",
-            style = MaterialTheme.typography.headlineMedium ,
+            text = "Tick Tack Toe",
+            style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Monospace),
             color = MaterialTheme.colorScheme.primary
         )
+
 
         OutlinedTextField(
             value = playerName,
@@ -76,26 +77,32 @@ fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navControll
 
         Button(
             onClick = {
-                if (playerName.isNotEmpty()) {
-
-
+                if (isNameValid) {
                     navController.navigate("Lobby/$playerName")
-
-
                 }
-
-
-
 
             },
             modifier = Modifier
-                .shadow(100.dp, ambientColor = Color.White, spotColor = Color.White, shape = RoundedCornerShape(7.dp))
+                .shadow(
+                    100.dp,
+                    ambientColor = Color.White,
+                    spotColor = Color.White,
+                    shape = RoundedCornerShape(7.dp)
+                )
                 .height(55.dp)
                 .width(280.dp),
-            colors = ButtonDefaults.buttonColors(Color.DarkGray),
-            shape = RectangleShape,        ) {
+            colors = ButtonDefaults.buttonColors(if (isNameValid) Color.Green else Color.Gray),
+            shape = RectangleShape,
+            enabled = isNameValid        ) {
             Text("Join Lobby")
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (!isNameValid && playerName.isNotEmpty()) {
+            Text("Please enter a valid name (2-10 characters, letters only)", color = Color.Red)
         }
     }
 }
+
 

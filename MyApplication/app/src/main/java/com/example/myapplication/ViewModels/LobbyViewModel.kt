@@ -15,6 +15,7 @@ import io.garrit.android.multiplayer.Game
 import io.garrit.android.multiplayer.GameResult
 import io.garrit.android.multiplayer.ServerState
 import io.garrit.android.multiplayer.SupabaseService.serverState
+import io.garrit.android.multiplayer.SupabaseService.users
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
@@ -29,6 +30,9 @@ class LobbyViewModel : ViewModel() {
     val gamesState = MutableStateFlow<List<Game>>(emptyList())
     var useruserstate = mutableListOf<Player>()
     var currentUser: Player? = null
+    var games = SupabaseService.games
+
+
 
 
     init {
@@ -64,5 +68,14 @@ class LobbyViewModel : ViewModel() {
     fun filterCurrentUser(users: List<Player>): List<Player> {
         return users.filter { it != currentUser }
     }
+
+    suspend fun leavelobby() {
+        SupabaseService.leaveLobby()
+
+    }
+
+
+
+
 
 }
