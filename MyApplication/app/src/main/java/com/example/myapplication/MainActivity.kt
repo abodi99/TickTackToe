@@ -72,7 +72,7 @@ fun NavigationHost(navController: NavHostController, lobbyViewModel: LobbyViewMo
 
         }
         composable(Screen.Game.route) {
-            TicTacToeGrid(navController)
+            TicTacToeGrid(navController, gameViewModel)
         }
     }
 

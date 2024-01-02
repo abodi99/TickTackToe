@@ -13,7 +13,6 @@ data class Cell(
     var symbol: Char = ' ',
     var color: Color = Color.Gray,
     var cellOwnerName: String = "",
-    var alpha: Float = 1.0f, // Default alpha value (fully opaque)
     var isOccupied: Boolean = false
 )
 

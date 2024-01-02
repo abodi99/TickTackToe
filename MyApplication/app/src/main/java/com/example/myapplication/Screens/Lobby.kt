@@ -69,12 +69,13 @@ fun LobbyScreen(navController: NavController, gameViewModel: GameViewModel, lobb
     LaunchedEffect(serverState.value) {
         when (serverState.value) {
             ServerState.LOADING_GAME, ServerState.GAME -> {
-
+                gameViewModel.playerReadyHandler()
                 navController.navigate("Game")
             }
 
             else -> {}
         }
+
     }
 
 
@@ -164,6 +165,7 @@ fun LobbyScreen(navController: NavController, gameViewModel: GameViewModel, lobb
 
                         if (accepted) {
                             // Accept invitation and navigate to GameScreen
+                            gameViewModel.playerReadyHandler()
                             lobbyViewModel.acceptInvitation(game, gameViewModel)
                         } else {
                             // Decline invitation
@@ -279,6 +281,7 @@ fun GameInvitationItem(
             IconButton(
                 onClick = {
                     onItemClicked(true)
+
                     gameViewModel.player1Turn = false
                 },
                 modifier = Modifier
