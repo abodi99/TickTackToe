@@ -45,7 +45,7 @@ fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navControll
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         // Header with gaming font
         Text(
@@ -97,7 +97,7 @@ fun Content(onJoinLobby: () -> Unit, lobbyViewModel: LobbyViewModel, navControll
             Text("Join Lobby")
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(0.dp))
 
         if (!isNameValid && playerName.isNotEmpty()) {
             Text("Please enter a valid name (2-10 characters, letters only)", color = Color.Red)

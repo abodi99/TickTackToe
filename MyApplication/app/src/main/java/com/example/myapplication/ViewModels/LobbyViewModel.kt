@@ -46,6 +46,13 @@ class LobbyViewModel : ViewModel() {
     }
 
 
+    fun leave(){
+
+        viewModelScope.launch {
+            leavelobbySusp()
+        }
+    }
+
     suspend fun joinLobby(playerName: String) {
         val player = Player(name = playerName)
         Log.w("myApp", "it got the player name");
@@ -69,7 +76,7 @@ class LobbyViewModel : ViewModel() {
         return users.filter { it != currentUser }
     }
 
-    suspend fun leavelobby() {
+    suspend fun leavelobbySusp() {
         SupabaseService.leaveLobby()
 
     }

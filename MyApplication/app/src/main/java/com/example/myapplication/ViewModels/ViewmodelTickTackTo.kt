@@ -1,6 +1,9 @@
 package com.example.myapplication.ViewModels
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
@@ -11,14 +14,19 @@ import com.example.myapplication.data.Cell
 import io.garrit.android.multiplayer.ActionResult
 import io.garrit.android.multiplayer.Game
 import io.garrit.android.multiplayer.GameResult
+import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.SupabaseCallback
 import io.garrit.android.multiplayer.SupabaseService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlin.math.log
+import androidx.compose.ui.platform.LocalContext
+import io.garrit.android.multiplayer.SupabaseService.gameFinish
+import io.ktor.client.utils.EmptyContent.status
+
 
 class GameViewModel : ViewModel(), SupabaseCallback {
-    private val _board = Board(rows = 3, columns = 3)
+    var _board = Board(rows = 3, columns = 3)
     var playerReady1 by mutableStateOf(false)
     var playerReady2 by mutableStateOf(false)
     var player1Turn by mutableStateOf(false)
@@ -28,42 +36,14 @@ class GameViewModel : ViewModel(), SupabaseCallback {
     val rows = 3
     val currentPlayer
         get() = SupabaseService.player
-
-
-    fun checkWin(board: Array<Array<Char>>): Int {
-        // Check rows
-        for (i in 0..2) {
-            if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
-                return if (board[i][0] == 'X') 1 else 2
-            }
-        }
-
-        // Check columns
-        for (i in 0..2) {
-            if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-                return if (board[0][i] == 'X') 1 else 2
-            }
-        }
-
-        // Check diagonals
-        if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
-            return if (board[0][0] == 'X') 1 else 2
-        }
-        if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
-            return if (board[0][2] == 'X') 1 else 2
-        }
-
-        // Check for draw
-        if (board.all { row -> row.all { it != ' ' } }) {
-            return 0 // Draw
-        }
-
-        // No winner yet
-        return -1
-    }
+    val game = SupabaseService.currentGame
 
     val board: Board
         get() = _board
+
+
+    var winner = ""
+    var winningSymbol = ' '
 
 
     init {
@@ -72,99 +52,45 @@ class GameViewModel : ViewModel(), SupabaseCallback {
                 .onEach { gamesState.value = listOf(it) }
         }
         SupabaseService.callbackHandler = this
-        startNewGame()
     }
 
-    fun startNewGame() {
-        _board.cells.forEach { row ->
-            row.forEach { cell ->
-                cell.symbol = ' '
-                cell.isOccupied = false
-                cell.color = Color.White
-            }
+        fun reset(){
+            _board = Board(rows = 3, columns = 3)
+
         }
 
-    }
-
-    fun switchTurn() {
-        player1Turn = !player1Turn
-    }
 
     fun updateCell(row: Int, column: Int) {
-        var color: Color? = null;
-        var symbol: Char? = null;
-
-
-
-        if(!board.cells[row][column].isOccupied){
-            if(player1Turn){
-                color = Color.Cyan
+        var symbol : Char
+        if (!board.cells[row][column].isOccupied) {
+          if (  player1Turn) {
                 symbol = 'X'
 
-            }
-            else {
-                color = Color.Red
+            } else {
                 symbol = 'O'
             }
             board.cells = board.cells.mapIndexed { rowIndex, rowList ->
                 rowList.mapIndexed { colIndex, cell ->
                     if (rowIndex == row && colIndex == column) {
-                        Cell(row, column, symbol, color,currentPlayer!!.name,  true)
+                        Cell(row, column, symbol, true)
                         //checkWin( )
                     } else {
                         cell
                     }
                 }
             }
-            viewModelScope.launch {
-                SupabaseService.sendTurn(row,column)
-                SupabaseService.releaseTurn()
 
-            }
+
+                viewModelScope.launch {
+                    SupabaseService.sendTurn(row, column)
+                    SupabaseService.releaseTurn()
+
+                }
+
+
 
         }
 
-
-
-    }
-
-
-    fun checkWin(board: List<List<Cell>>): Int {
-        // Check rows
-        for (row in board) {
-            val symbols = row.map { it.symbol }
-            if (symbols.all { it == 'X' } || symbols.all { it == 'O' }) {
-                return if (symbols[0] == 'X') 1 else 2
-            }
-        }
-
-        // Check columns
-        for (col in 0 until board[0].size) {
-            val symbols = board.map { it[col] }.map { it.symbol }
-            if (symbols.all { it == 'X' } || symbols.all { it == 'O' }) {
-                return if (symbols[0] == 'X') 1 else 2
-            }
-        }
-
-        // Check diagonals
-        val mainDiagonalSymbols = board.indices.map { board[it][it] }.map { it.symbol }
-        val secondaryDiagonalSymbols = board.indices.map { board[it][board.lastIndex - it] }.map { it.symbol }
-        if (mainDiagonalSymbols.all { it == 'X' } || mainDiagonalSymbols.all { it == 'O' }) {
-            return if (mainDiagonalSymbols[0] == 'X') 1 else 2
-        }
-        if (secondaryDiagonalSymbols.all { it == 'X' } || secondaryDiagonalSymbols.all { it == 'O' }) {
-            return if (secondaryDiagonalSymbols[0] == 'X') 1 else 2
-        }
-
-        // Check for draw
-        if (board.all { row -> row.all { it.symbol != ' ' } }) {
-            return 0 // Draw
-        }
-
-        // No winner yet
-        return -1
-    }
-    fun makeMove(){
 
     }
 
@@ -179,11 +105,7 @@ class GameViewModel : ViewModel(), SupabaseCallback {
     }
 
     override suspend fun actionHandler(x: Int, y: Int) {
-        println("trying to go in dropdisc")
-        //dropDisc(x, false, Color.Red)
         updateCell(x, y)
-        println("could go in!")
-        println("actionHandler Not yet implemented")
     }
 
     override suspend fun answerHandler(status: ActionResult) {
@@ -191,8 +113,104 @@ class GameViewModel : ViewModel(), SupabaseCallback {
     }
 
     override suspend fun finishHandler(status: GameResult) {
-        println("finishHandler Not yet implemented")
+        checkWin()
+        checkDraw()
     }
 
+
+
+
+    fun leave(){
+        viewModelScope.launch {
+            SupabaseService.leaveGame()
+        }
+    }
+
+
+
+
+    fun checkWin(): Boolean {
+        var hasWinner = false
+
+
+        // Check rows for a win
+        for (i in 0 until rows) {
+            if (board.cells[i][0].symbol == board.cells[i][1].symbol &&
+                board.cells[i][1].symbol == board.cells[i][2].symbol &&
+                board.cells[i][0].symbol != ' ') {
+                hasWinner = true
+                winningSymbol = board.cells[i][0].symbol
+                break
+            }
+        }
+
+        // Check columns for a win
+        for (i in 0 until columns) {
+            if (board.cells[0][i].symbol == board.cells[1][i].symbol &&
+                board.cells[1][i].symbol == board.cells[2][i].symbol &&
+                board.cells[0][i].symbol != ' ') {
+                hasWinner = true
+                winningSymbol = board.cells[0][i].symbol
+                break
+            }
+        }
+
+        // Check diagonals for a win
+        if (board.cells[0][0].symbol == board.cells[1][1].symbol &&
+            board.cells[1][1].symbol == board.cells[2][2].symbol &&
+            board.cells[0][0].symbol != ' ') {
+            hasWinner = true
+            winningSymbol = board.cells[0][0].symbol
+        }
+
+        if (board.cells[0][2].symbol == board.cells[1][1].symbol &&
+            board.cells[1][1].symbol == board.cells[2][0].symbol &&
+            board.cells[0][2].symbol != ' ') {
+            hasWinner = true
+            winningSymbol = board.cells[0][2].symbol
+        }
+
+        // If there is a winner, update winner information and return true
+        if (hasWinner) {
+            winner = "winner is player " + winningSymbol
+            viewModelScope.launch {
+                gameFinish(GameResult.WIN)
+            }
+            return true
+        }
+
+        return false
+    }
+
+
+    fun checkDraw(): Boolean {
+        var isTie = true
+        for (i in 0 until rows) {
+            for (j in 0 until columns) {
+                if (board.cells[i][j].symbol == ' ') {
+                    isTie = false
+                    break
+                }
+            }
+        }
+
+        if (isTie) {
+            winner = "It's a Draw"
+            viewModelScope.launch {
+                gameFinish(GameResult.DRAW)
+
+            }
+            return true
+        }
+
+        return false
+    }
+
+
+
 }
+
+
+
+
 

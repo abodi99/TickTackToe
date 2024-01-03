@@ -43,6 +43,7 @@ import com.example.myapplication.ViewModels.GameViewModel
 import io.garrit.android.multiplayer.Game
 import io.garrit.android.multiplayer.Player
 import io.garrit.android.multiplayer.ServerState
+import io.garrit.android.multiplayer.SupabaseService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -104,7 +105,7 @@ fun LobbyScreen(navController: NavController, gameViewModel: GameViewModel, lobb
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
                         // Simulate some asynchronous task
-                        lobbyViewModel.leavelobby()
+                        lobbyViewModel.leave()
 
                     }
                     navController.popBackStack()
@@ -116,6 +117,8 @@ fun LobbyScreen(navController: NavController, gameViewModel: GameViewModel, lobb
                 )
 
             }
+
+
         }
 
 
